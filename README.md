@@ -64,7 +64,8 @@ Environment variables:
   GEMINI_API_KEY  <YOUR_API_KEY>  - Your Gemini API key  (required)
 ```
 
-\* gpt-srt-translator supports .env files for managing environment variables.
+\* gpt-srt-translator supports .env files for managing environment variables. Locations: .env in current folder or .env
+in gpt-srt-translator project root folder (here with README.md file).
 
 ## How It Works
 

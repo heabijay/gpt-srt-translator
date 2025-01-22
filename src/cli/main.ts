@@ -13,7 +13,17 @@ import { UpdateProgressBarCounterPipeHandler } from "./updateProgressBarCounterP
 import { colors } from "@cliffy/ansi/colors";
 import { encodeNodeListToGptInput } from "../core/v1/gpt-input-encoder.ts";
 import { getSystemInstructions } from "../core/v1/gpt-system-instructions.ts";
+import { load as load_env } from "@std/dotenv";
 import { parseSync, stringify } from "npm:subtitle@4.2.1";
+
+if (import.meta.dirname) {
+    await load_env({
+        // The current module path is 'src/cli/main.ts'
+        // To get .env from root folder we use two parent folder behind
+        envPath: path.join(import.meta.dirname, "../../.env"),
+        export: true,
+    });
+}
 
 type AppOptions = {
     geminiApiKey: string;
