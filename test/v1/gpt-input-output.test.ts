@@ -108,10 +108,10 @@ by gunshot, catastrophic blood loss.
 `;
 
     const input = `#1#I've experienced death so many times.
-#2##<i>But never my own.</i>
+#2#<i>But never#2#<i>But never my own.</i>
 ##3#<i>Talk to me.</i>
 #9#4#We have penetrating thoracic trauma
-#5#by gunshot, catastrophic blood loss.
+#5##5#by gunshot, catastrophic blood loss.
 #####END-OF-TRANSLATION#####
 `;
 

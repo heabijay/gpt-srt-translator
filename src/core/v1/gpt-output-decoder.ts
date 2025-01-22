@@ -4,7 +4,6 @@ import { Node } from "subtitle";
 export class GptOutputDecoder extends Transform {
     private readonly _subtitles: Node[];
 
-    private _previousIndex: number = -1;
     private _currentIndex: number = -1;
     private _currentString: string = "";
 
@@ -48,7 +47,9 @@ export class GptOutputDecoder extends Transform {
             );
 
             if (positionMatch) {
-                this._pushCurrentStringIndexUntilPosition(i);
+                if (positionMatch.value != this._currentIndex + 1) {
+                    this._pushCurrentStringIndexUntilPosition(i);
+                }
 
                 this._currentIndex = positionMatch.value - 1;
                 this._currentString = this._currentString.substring(
@@ -75,7 +76,7 @@ export class GptOutputDecoder extends Transform {
             return parseResult;
         }
 
-        if (parseResult.value < this._previousIndex) {
+        if (parseResult.value <= this._currentIndex) {
             return; // Ignore this push cause it seems to be invalid
         }
 
