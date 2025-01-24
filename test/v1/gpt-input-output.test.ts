@@ -105,6 +105,10 @@ We have penetrating thoracic trauma
 5
 00:00:56,091 --> 00:00:58,220
 by gunshot, catastrophic blood loss.
+
+6
+00:01:00,640 --> 00:01:02,470
+300 bucks.
 `;
 
     const input = `#1#I've experienced death so many times.
@@ -112,6 +116,7 @@ by gunshot, catastrophic blood loss.
 ##3#<i>Talk to me.</i>
 #9#4#We have penetrating thoracic trauma
 #5##5#by gunshot, catastrophic blood loss.
+#6#300 bucks.#
 #####END-OF-TRANSLATION#####
 `;
 

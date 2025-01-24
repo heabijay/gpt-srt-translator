@@ -172,10 +172,9 @@ export class GptOutputDecoder extends Transform {
             for (let i = 0; i < translated.length; i++) {
                 if (translated[i] >= "0" && translated[i] <= "9") {
                     continue;
-                } else if (
-                    translated[i] === "#" || translated[i] === " " ||
-                    translated[i] === "\n"
-                ) {
+                } else if (translated[i] === "\n" || translated[i] === " ") {
+                    continue;
+                } else if (translated[i] === "#") {
                     indexFrom = i;
                     continue;
                 }
@@ -186,15 +185,18 @@ export class GptOutputDecoder extends Transform {
             for (let i = translated.length - 1; i >= 0; i--) {
                 if (translated[i] >= "0" && translated[i] <= "9") {
                     continue;
-                } else if (
-                    translated[i] === "#" || translated[i] === " " ||
-                    translated[i] === "\n"
-                ) {
+                } else if (translated[i] === "\n" || translated[i] === " ") {
+                    continue;
+                } else if (translated[i] === "#") {
                     indexTo = i;
                     continue;
                 }
 
                 break;
+            }
+
+            while (indexTo >= 0 && translated[indexTo - 1] === "\n") {
+                indexTo--;
             }
 
             return translated.substring(indexFrom + 1, indexTo);
