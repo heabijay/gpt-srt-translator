@@ -7,14 +7,14 @@ import { ActionHandler, Command } from "@cliffy/command";
 import { GeminiGptClient } from "../core/gemini-gpt-client.ts";
 import { GptClient } from "../core/v1/gpt-client.ts";
 import { GptOutputDecoder } from "../core/v1/gpt-output-decoder.ts";
-import { PassThrough } from "node:stream";
+import { PassThrough, Transform } from "node:stream";
 import { PrintGptOutputPipeHandler } from "./printGptOutputPipeHandler.ts";
 import { UpdateProgressBarCounterPipeHandler } from "./updateProgressBarCounterPipeHandler.ts";
 import { colors } from "@cliffy/ansi/colors";
-import { encodeNodeListToGptInput } from "../core/v1/gpt-input-encoder.ts";
+import { encodeNodeListToGptMessage } from "../core/v1/gpt-input-encoder.ts";
 import { getSystemInstructions } from "../core/v1/gpt-system-instructions.ts";
 import { load as load_env } from "@std/dotenv";
-import { parseSync, stringify } from "npm:subtitle@4.2.1";
+import { NodeList, parseSync, stringify } from "npm:subtitle@4.2.1";
 
 if (import.meta.dirname) {
     await load_env({
@@ -28,6 +28,7 @@ if (import.meta.dirname) {
 type AppOptions = {
     geminiApiKey: string;
     language: string;
+    continue: boolean;
     model: string;
     rpm?: number;
     debug: boolean;
@@ -45,26 +46,31 @@ await new Command()
         "Target language for translation to (e.g., English, Ukrainian)",
         { required: true },
     )
+    .option("--continue", "Continue translation from position in destination file", { default: false })
     .option("--model <model_name>", "Which generative AI model to use", { default: "gemini-2.0-flash-exp" })
     .option("--rpm <requests_per_minute>", "Maximum requests per minute to the AI model", { default: 10 })
     .option("--debug", "Show raw AI output for debugging (instead of the progress bar)", { default: false })
     .parse(Deno.args);
 
 async function rootCommandAction(options: AppOptions, inputSrtFile: string, outputSrtFile: string): Promise<void> {
-    const isProgressBarEnabled = !options.debug && outputSrtFile != "stdout";
-    const gptClient: GptClient = createGptClient(options);
     const subtitles = parseSync(await Deno.readTextFile(inputSrtFile));
-    const promptString = encodeNodeListToGptInput(subtitles);
+    const subtitlesAsMessage = encodeNodeListToGptMessage(subtitles);
+    const existingSubtitlesToContinue = await readExistingSubtitlesToContinue(options, inputSrtFile, outputSrtFile);
+    const gptClient: GptClient = createGptClient(options);
 
     const progress = new ProgressBar({
         title: `🪄 Translating ${colors.bold(path.basename(inputSrtFile))} to ${colors.bold(options.language)}`,
         total: subtitles.length,
-        display: `:title, :completed/:total (:percent), :time (ETA: :eta)`,
+        display: `:title, :completed/:total (:percent), :time ${existingSubtitlesToContinue ? "" : "(ETA: :eta)"}`,
         output: Deno.stderr,
     });
 
     const output = new PassThrough();
-    const progressBarCounterHandler = new UpdateProgressBarCounterPipeHandler(progress, isProgressBarEnabled);
+    const progressBarCounterHandler = new UpdateProgressBarCounterPipeHandler(
+        progress,
+        !options.debug,
+        existingSubtitlesToContinue?.length,
+    );
     const progressBarCounterHandlerFinishPromise = new Promise<void>((resolve) =>
         progressBarCounterHandler.on("finish", resolve)
     );
@@ -74,9 +80,13 @@ async function rootCommandAction(options: AppOptions, inputSrtFile: string, outp
         .pipe(new GptOutputDecoder(subtitles))
         .pipe(progressBarCounterHandler)
         .pipe(stringify({ format: "SRT" }))
-        .pipe(outputSrtFile == "stdout" ? process.stdout : fs.createWriteStream(outputSrtFile));
+        .pipe(fs.createWriteStream(outputSrtFile));
 
-    await gptClient.run(promptString, output);
+    pushNodeListThroughStream(progressBarCounterHandler, existingSubtitlesToContinue);
+
+    await gptClient.run(subtitlesAsMessage, output, {
+        modelState: existingSubtitlesToContinue && encodeNodeListToGptMessage(existingSubtitlesToContinue),
+    });
     await progressBarCounterHandlerFinishPromise;
 
     progress.title = `🎉 ${colors.bold(path.basename(inputSrtFile))} has been translated to ${
@@ -96,4 +106,23 @@ function createGptClient(options: AppOptions): GptClient {
             limitRequestsPerMinute: options.rpm,
         },
     });
+}
+
+async function readExistingSubtitlesToContinue(
+    options: AppOptions,
+    _inputSrtFile: string,
+    outputSrtFile: string,
+): Promise<NodeList | undefined> {
+    return options.continue &&
+            fs.existsSync(outputSrtFile) &&
+            parseSync(await Deno.readTextFile(outputSrtFile)) ||
+        undefined;
+}
+
+function pushNodeListThroughStream(stream: Transform, nodeList?: NodeList) {
+    if (nodeList) {
+        for (const node of nodeList) {
+            stream.push(node);
+        }
+    }
 }

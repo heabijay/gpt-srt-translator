@@ -55,6 +55,7 @@ Options:
   -h, --help                             - Show this help.                                                                                  
   -V, --version                          - Show the version number for this program.                                                        
   -l, --language  <language>             - Target language for translation to (e.g., English, Ukrainian)   (required)                       
+  --continue                             - Continue translation from position in destination file          (Default: false)                 
   --model         <model_name>           - Which generative AI model to use                                (Default: "gemini-2.0-flash-exp")
   --rpm           <requests_per_minute>  - Maximum requests per minute to the AI model                     (Default: 10)                    
   --debug                                - Show raw AI output for debugging (instead of the progress bar)  (Default: false)                 

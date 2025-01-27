@@ -7,17 +7,17 @@ export class UpdateProgressBarCounterPipeHandler extends Transform {
     private readonly _enabled: boolean;
     private _progressValue: number;
 
-    constructor(progress: ProgressBar, enabled: boolean) {
+    constructor(progress: ProgressBar, enabled: boolean, initialValue?: number) {
         super({
             objectMode: true,
         });
 
         this._progress = progress;
         this._enabled = enabled;
-        this._progressValue = 0;
+        this._progressValue = initialValue ?? 0;
 
         if (this._enabled) {
-            this._progress.render(0);
+            this._progress.render(this._progressValue);
         }
     }
 

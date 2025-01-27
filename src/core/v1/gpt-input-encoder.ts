@@ -20,7 +20,7 @@ export class GptInputEncoder extends Transform {
     }
 }
 
-export function encodeNodeListToGptInput(nodes: NodeList): string {
+export function encodeNodeListToGptMessage(nodes: NodeList): string {
     return nodes.map(encodeNodeToGptInputPart).join("\n");
 }
 

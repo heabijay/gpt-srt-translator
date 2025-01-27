@@ -3,7 +3,7 @@ import { PassThrough } from "node:stream";
 import { Node, NodeList, parse, parseSync, stringify } from "subtitle";
 import { WritableMemoryStream } from "../writable-memory-stream.ts";
 import * as assert from "@std/assert";
-import { encodeNodeListToGptInput, GptInputEncoder } from "../../src/core/v1/gpt-input-encoder.ts";
+import { encodeNodeListToGptMessage, GptInputEncoder } from "../../src/core/v1/gpt-input-encoder.ts";
 import { GptOutputDecoder } from "../../src/core/v1/gpt-output-decoder.ts";
 
 const sampleSrtFile: fs.PathLike = "./test/sample.srt";
@@ -36,7 +36,7 @@ Deno.test("gpt-input-output-integrity", async () => {
 Deno.test("gpt-list-input-output-integrity", async () => {
     const originalContent = fs.readFileSync(sampleSrtFile, "utf-8");
     const subtitleNodeList = parseSync(originalContent);
-    const subtitleNodeListString = encodeNodeListToGptInput(subtitleNodeList);
+    const subtitleNodeListString = encodeNodeListToGptMessage(subtitleNodeList);
 
     const writableStream = new WritableMemoryStream();
     const subtitleNodeStringStream = new PassThrough();
@@ -58,7 +58,7 @@ Deno.test("gpt-list-input-output-integrity", async () => {
 Deno.test("gpt-list-chunked-input-output-integrity", async () => {
     const originalContent = fs.readFileSync(sampleSrtFile, "utf-8");
     const subtitleNodeList = parseSync(originalContent);
-    const subtitleNodeListString = encodeNodeListToGptInput(subtitleNodeList);
+    const subtitleNodeListString = encodeNodeListToGptMessage(subtitleNodeList);
 
     const writableStream = new WritableMemoryStream();
     const subtitleNodeStringStream = new PassThrough();

@@ -6,7 +6,7 @@ import {
     HarmBlockThreshold,
     HarmCategory,
 } from "npm:@google/generative-ai@0.21.0";
-import { GptClient } from "./v1/gpt-client.ts";
+import { GptClient, GptClientRunOptions } from "./v1/gpt-client.ts";
 import { GptSettings } from "./gpt-settings.ts";
 import { ClassicRateLimiter } from "../utils/rate-limiter.ts";
 
@@ -40,10 +40,10 @@ export class GeminiGptClient implements GptClient {
         }
     }
 
-    async run(input: string, outputStream: NodeJS.WritableStream): Promise<void> {
+    async run(input: string, outputStream: NodeJS.WritableStream, options?: GptClientRunOptions): Promise<void> {
         const history: Content[] = [
             { role: "user", parts: [{ text: input }] },
-            { role: "model", parts: [{ text: "Translated:\n\n" }] },
+            { role: "model", parts: [{ text: "Translated:\n\n" + (options?.modelState ?? "") }] },
         ];
 
         const chat = this._generativeModel.startChat({
