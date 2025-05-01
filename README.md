@@ -44,7 +44,7 @@ Demo:
 
 ```
 Usage:   gpt-srt-translator <input_srt_file> <output_srt_file> --language <language>
-Version: 0.1.0                                                                      
+Version: 0.1.1                                                                      
 
 Description:
 
@@ -56,7 +56,7 @@ Options:
   -V, --version                          - Show the version number for this program.                                                        
   -l, --language  <language>             - Target language for translation to (e.g., English, Ukrainian)   (required)                       
   --continue                             - Continue translation from position in destination file          (Default: false)                 
-  --model         <model_name>           - Which generative AI model to use                                (Default: "gemini-2.0-flash-exp")
+  --model         <model_name>           - Which generative AI model to use                                (Default: "gemini-2.5-flash-preview-04-17")
   --rpm           <requests_per_minute>  - Maximum requests per minute to the AI model                     (Default: 10)                    
   --debug                                - Show raw AI output for debugging (instead of the progress bar)  (Default: false)                 
 

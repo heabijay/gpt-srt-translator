@@ -36,7 +36,7 @@ type AppOptions = {
 
 await new Command()
     .name("gpt-srt-translator")
-    .version("0.1.0")
+    .version("0.1.1")
     .description("🌐 Translate subtitle (SRT) files using the power of Gemini and other LLMs. (Experiment)")
     .action(rootCommandAction as ActionHandler)
     .env("GEMINI_API_KEY=<YOUR_API_KEY>", "Your Gemini API key", { required: true })
@@ -47,7 +47,7 @@ await new Command()
         { required: true },
     )
     .option("--continue", "Continue translation from position in destination file", { default: false })
-    .option("--model <model_name>", "Which generative AI model to use", { default: "gemini-2.0-flash-exp" })
+    .option("--model <model_name>", "Which generative AI model to use", { default: "gemini-2.5-flash-preview-04-17" })
     .option("--rpm <requests_per_minute>", "Maximum requests per minute to the AI model", { default: 10 })
     .option("--debug", "Show raw AI output for debugging (instead of the progress bar)", { default: false })
     .parse(Deno.args);

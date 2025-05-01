@@ -32,22 +32,20 @@ export function getSystemInstructions(options: GetSystemInstructionsOptions) {
 
 8. **Error Handling & Output Limits:** If you encounter output limits or errors, stop immediately. Do not attempt to fix or complete the current subtitle. Truncated output within a subtitle line is acceptable in such cases.
 
-**Example Input:**
-
-\`\`\`
+<example1>
+<input>
 #1#The_rain_falls_softly
 #2#[door_knocking]
 #3#♪Singing_a_lullaby♪
 #4#He_said,_"Who's_there?"
-\`\`\`
+</input>
 
-**Example Output (for translation to Spanish - assuming translation of music text):**
-
-\`\`\`
+<output>
 #1#La_lluvia_cae_suavemente
 #2#[tocan_a_la_puerta]
 #3#♪Cantando_una_canción_de_cuna♪
 #4#Él_dijo,_"¿Quién_está_ahí?"
-\`\`\`
+</output>
+</example1>
 `;
 }
