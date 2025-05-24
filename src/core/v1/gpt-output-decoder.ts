@@ -70,6 +70,7 @@ export class GptOutputDecoder extends Transform {
     }
 
     private _parseValidSrtIndexFromString(str: string, position: number) {
+        const validSrtIndexNextOffset = 5;
         const parseResult = parseSrtIndexFromString(str, position);
 
         if (!parseResult) {
@@ -80,7 +81,7 @@ export class GptOutputDecoder extends Transform {
             return; // Ignore this push cause it seems to be invalid
         }
 
-        if (parseResult.value > this._subtitles.length) {
+        if (parseResult.value > this._currentIndex + validSrtIndexNextOffset) {
             return; // This push index is also invalid
         }
 

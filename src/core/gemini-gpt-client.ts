@@ -93,11 +93,14 @@ export class GeminiGptClient implements GptClient {
             }
 
             if (responseString) {
-                if (history[1]?.role == "model") {
-                    history[1].parts?.push({ text: responseString });
-                } else {
-                    history.push({ role: "model", parts: [{ text: responseString }] });
-                }
+                // Old solution, temporary replaced:
+                // if (history[1]?.role == "model") {
+                //     history[1].parts?.push({ text: responseString });
+                // } else {
+                //     history.push({ role: "model", parts: [{ text: responseString }] });
+                // }
+
+                history.push({ role: "model", parts: [{ text: responseString }] });
             }
         }
     }

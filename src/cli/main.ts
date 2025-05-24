@@ -47,7 +47,7 @@ await new Command()
         { required: true },
     )
     .option("--continue", "Continue translation from position in destination file", { default: false })
-    .option("--model <model_name>", "Which generative AI model to use", { default: "gemini-2.5-flash-preview-04-17" })
+    .option("--model <model_name>", "Which generative AI model to use", { default: "gemini-2.5-flash-preview-05-20" })
     .option("--rpm <requests_per_minute>", "Maximum requests per minute to the AI model", { default: 10 })
     .option("--debug", "Show raw AI output for debugging (instead of the progress bar)", { default: false })
     .parse(Deno.args);
