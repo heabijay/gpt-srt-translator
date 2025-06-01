@@ -38,6 +38,5 @@ function getNodeText(node: Node): string {
 }
 
 function preprocessText(text: string): string {
-    // Old: return text.replaceAll(" ", "_");
-    return text;
+    return text.replaceAll(" ", "_");
 }

@@ -36,7 +36,7 @@ type AppOptions = {
 
 await new Command()
     .name("gpt-srt-translator")
-    .version("0.1.1")
+    .version("0.1.2")
     .description("🌐 Translate subtitle (SRT) files using the power of Gemini and other LLMs. (Experiment)")
     .action(rootCommandAction as ActionHandler)
     .env("GEMINI_API_KEY=<YOUR_API_KEY>", "Your Gemini API key", { required: true })

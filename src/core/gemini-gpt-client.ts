@@ -46,8 +46,9 @@ export class GeminiGptClient implements GptClient {
                     systemInstruction: this._gptClientOptions.gptSettings.systemInstructions,
                     temperature: this._gptClientOptions.gptSettings.temperature,
                     thinkingConfig: {
-                        thinkingBudget: 0,
+                        thinkingBudget: 128, // exp
                     },
+                    maxOutputTokens: 8192, // exp
                     safetySettings: [
                         {
                             category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
@@ -101,6 +102,7 @@ export class GeminiGptClient implements GptClient {
                 // }
 
                 history.push({ role: "model", parts: [{ text: responseString }] });
+                history.push({ role: "user", parts: [{ text: "Continue from the same position and INDEX" }] });
             }
         }
     }
