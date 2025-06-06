@@ -32,6 +32,10 @@ export class GeminiGptClient implements GptClient {
                 role: "model",
                 parts: [{ text: options.modelState }],
             });
+            history.push({
+                role: "user",
+                parts: [{ text: "Continue from the same ACTUAL position and INDEX" }],
+            });
         }
 
         while (true) {
@@ -46,7 +50,7 @@ export class GeminiGptClient implements GptClient {
                     systemInstruction: this._gptClientOptions.gptSettings.systemInstructions,
                     temperature: this._gptClientOptions.gptSettings.temperature,
                     thinkingConfig: {
-                        thinkingBudget: 128, // exp
+                        thinkingBudget: 256, // exp
                     },
                     maxOutputTokens: 8192, // exp
                     safetySettings: [
@@ -102,7 +106,7 @@ export class GeminiGptClient implements GptClient {
                 // }
 
                 history.push({ role: "model", parts: [{ text: responseString }] });
-                history.push({ role: "user", parts: [{ text: "Continue from the same position and INDEX" }] });
+                history.push({ role: "user", parts: [{ text: "Continue from the same ACTUAL position and INDEX" }] });
             }
         }
     }

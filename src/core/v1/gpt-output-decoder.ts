@@ -1,18 +1,23 @@
 import { Transform, TransformCallback, TransformOptions } from "node:stream";
 import { Node } from "subtitle";
 
+interface GptOutputDecoderOptions {
+    currentIndex?: number;
+}
+
 export class GptOutputDecoder extends Transform {
     private readonly _subtitles: Node[];
 
     private _currentIndex: number = -1;
     private _currentString: string = "";
 
-    constructor(subtitles: Node[], opts?: TransformOptions) {
+    constructor(subtitles: Node[], decoderOptions?: GptOutputDecoderOptions, opts?: TransformOptions) {
         super({
             objectMode: true,
             ...opts,
         });
         this._subtitles = subtitles;
+        this._currentIndex = decoderOptions?.currentIndex || -1;
     }
 
     override _transform(

@@ -77,7 +77,7 @@ async function rootCommandAction(options: AppOptions, inputSrtFile: string, outp
 
     output
         .pipe(new PrintGptOutputPipeHandler(process.stdout, options.debug))
-        .pipe(new GptOutputDecoder(subtitles))
+        .pipe(new GptOutputDecoder(subtitles, { currentIndex: existingSubtitlesToContinue?.length }))
         .pipe(progressBarCounterHandler)
         .pipe(stringify({ format: "SRT" }))
         .pipe(fs.createWriteStream(outputSrtFile));
